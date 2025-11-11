@@ -1,1 +1,5 @@
-# dockerignore placeholder
+node_modules
+tests
+.git
+.gitignore
+Dockerfile
