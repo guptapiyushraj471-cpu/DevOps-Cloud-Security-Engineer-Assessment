@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="DevOps Cloud Security Engineer Banner" width="1000" />
+</p>
 ![CI](https://github.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment/actions/workflows/ci-cd.yaml/badge.svg)
 
 # DevOps Cloud Security Engineer Assessment
