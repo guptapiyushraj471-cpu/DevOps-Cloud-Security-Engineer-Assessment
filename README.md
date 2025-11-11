@@ -1,58 +1,83 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="DevOps Cloud Security Engineer Banner" width="1000" />
+  <img src="https://raw.githubusercontent.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment/main/assets/banner.svg"
+       alt="DevOps Cloud Security Engineer Banner"
+       width="1000" />
 </p>
 
 <p align="center">
   <img src="https://github.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment/actions/workflows/ci-cd.yaml/badge.svg" alt="CI Status"/>
   <img src="https://img.shields.io/github/languages/top/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment" alt="Language"/>
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"/>
+  <img src="https://img.shields.io/badge/Tests-passing-brightgreen" alt="Tests"/>
 </p>
 
-<h3 align="center">Production-ready microservice: Node.js • Docker • Terraform • EKS • CI/CD • Security</h3>
-
-# DevOps Cloud Security Engineer Assessment
-**Repository:** devops-cloud-security-engineer-assessment  
-**Author:** Piyush Gupta
-
-
-# DevOps Cloud Security Engineer Assessment
-
-**Repository:** devops-cloud-security-engineer-assessment  
-**Author:** Piyush Gupta
+<h3 align="center">Production-ready microservice • Node.js • Docker • Terraform • EKS • GitHub Actions • Security</h3>
 
 ---
 
-## Table of contents
-- [Goal](#goal)
-- [Architecture](#architecture)
-- [Local developer flow](#local-developer-flow)
-- [CI / CD pipeline (GitHub Actions)](#ci--cd-pipeline-github-actions)
-- [Infrastructure (Terraform)](#infrastructure-terraform)
-- [Kubernetes manifests](#kubernetes-manifests)
-- [Security, secrets & IAM](#security-secrets--iam)
-- [Threat model & mitigations](#threat-model--mitigations)
-- [Trade-offs & future improvements](#trade-offs--future-improvements)
-- [Grader checklist (what to review)](#grader-checklist-what-to-review)
+## 📌 Quick links
+- 🔗 Repository: `DevOps-Cloud-Security-Engineer-Assessment`  
+- 👨‍💻 Author: **Piyush Gupta**  
+- 📄 Live CI: check the badge above for latest run
 
 ---
 
-## Goal
-Create a secure, production-like Todo microservice demonstrating:
-- Node.js service with `/healthz` and `/api/v1/todos` (GET, POST)
-- Automated test coverage, linting
-- Multi-stage Docker image (non-root)
-- GitHub Actions: build → test → image → trivy scan → deploy
-- Infrastructure IaC (Terraform for EKS, DynamoDB, IRSA)
-- Kubernetes manifests with security best practices
+## 🧾 Table of contents
+- [Overview](#-overview)  
+- [Demo / Screenshots](#-demo--screenshots)  
+- [Tech Stack](#-tech-stack)  
+- [Architecture](#-architecture)  
+- [Quickstart (local)](#-quickstart-local)  
+- [CI / CD](#-ci--cd)  
+- [Infrastructure (Terraform)](#-infrastructure-terraform)  
+- [Kubernetes Manifests](#-kubernetes-manifests)  
+- [Security & Hardening](#-security--hardening)  
+- [Testing & Validation](#-testing--validation)  
+- [Grader Checklist / Mapping](#-grader-checklist--mapping)  
+- [Future Work](#-future-work)  
+- [Contact](#-contact)
 
 ---
 
-## Architecture
+## 👋 Overview
+This repository is a **complete submission** for a DevOps & Cloud Security Engineer assessment.  
+It presents a Todo microservice that demonstrates robust CI/CD, IaC, containerization, Kubernetes deployment, and security best practices.
+
+**Highlights**
+- Small, testable Node.js API with `/healthz`, `/metrics`, and `/api/v1/todos`.  
+- Multi-stage Dockerfile and non-root runtime image.  
+- GitHub Actions pipeline: lint → test → build → Trivy scan → deploy.  
+- Terraform skeleton for VPC, EKS, DynamoDB, and IRSA (least-privilege IAM).  
+- Secure K8s manifests (probes, resources, securityContext, NetworkPolicy).
+
+---
+
+## 🧰 Tech Stack
+
+| Area | Tools |
+|---|---|
+| Language | Node.js (Express) |
+| Container | Docker (multi-stage) |
+| Orchestration | Kubernetes (EKS) |
+| Infra as Code | Terraform |
+| CI/CD | GitHub Actions |
+| Registry & Scanning | GHCR, Trivy |
+| DB | DynamoDB (AWS) |
+| Observability | prom-client (metrics) |
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=nodejs,docker,kubernetes,terraform,aws,githubactions,github" />
+</p>
+
+---
+
+## 🏗️ Architecture
 
 ```mermaid
-graph LR
-  User --> ALB[Ingress/ALB]
-  ALB --> ServiceCluster[EKS Service]
-  ServiceCluster --> TodoPod[Todo App Pod]
-  TodoPod --> DynamoDB[(DynamoDB Todos Table)]
-  ServiceCluster -->|Metrics| CloudWatch[(CloudWatch/Prometheus)]
+graph TD
+A[User] --> B[Ingress Controller]
+B --> C[Service]
+C --> D[Pod: Node.js API]
+D --> E[DynamoDB]
+C --> F[Prometheus Metrics]
+
