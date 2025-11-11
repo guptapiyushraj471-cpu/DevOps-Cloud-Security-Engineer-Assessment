@@ -238,3 +238,104 @@ This ensures zero downtime during version upgrades.
 2-Enables real-time traffic shifting between versions.
 
 3-Supports automated testing of new versions before full rollout.
+--------------------
+
+## 🧾 What to Submit — Final Deliverables
+
+Below is the complete structure and submission checklist for the **DevOps & Cloud Security Engineer Assessment**.  
+Each required component is implemented and available in this repository.
+
+### 📦 Repository URL
+🔗 **Repo:** [https://github.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment](https://github.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment)
+
+---
+
+### 1️⃣ `src/` — Node.js Service, Tests, Dockerfile
+**Folder:** `src/`  
+Contains the Node.js microservice with health, metrics, and todo APIs.
+
+| Component | Description |
+|------------|-------------|
+| `src/server.js` | Express.js server exposing `/healthz`, `/metrics`, `/api/v1/todos`. |
+| `src/routes/todos.js` | Handles CRUD operations for todos. |
+| `tests/api.test.js` | Jest + Supertest suite covering positive and negative cases. |
+| `Dockerfile` | Multi-stage build, non-root user, minimal image size. |
+
+✅ Includes linting, structured logging, Prometheus metrics, and Jest tests.
+
+---
+
+### 2️⃣ `infra/terraform/` — Infrastructure as Code (VPC, EKS, IRSA, DynamoDB)
+**Folder:** `infra/terraform/`
+
+Implements **AWS infrastructure provisioning** using Terraform:
+| File | Purpose |
+|------|----------|
+| `backend.tf` | Defines remote backend (S3 bucket + DynamoDB lock). |
+| `main.tf` | Creates VPC, EKS cluster, DynamoDB table, and IAM Role (IRSA). |
+| `outputs.tf` | Exports EKS cluster name, DynamoDB table name, IAM role ARN. |
+
+✅ IRSA implemented for pod-level IAM.  
+✅ Backend configured for secure remote state management.  
+
+---
+
+### 3️⃣ `k8s/` or `charts/` — Kubernetes Deployment Configuration
+**Folder:** `k8s/`
+
+| File | Description |
+|------|--------------|
+| `deployment.yaml` | Deploys app with liveness/readiness probes, resource limits, non-root container. |
+| `service.yaml` | Exposes app internally via ClusterIP. |
+| `ingress.yaml` | Handles external routing through ALB/Ingress Controller. |
+| `namespace.yaml` | Defines isolated namespace for the app. |
+| `networkpolicy.yaml` | Default-deny ingress/egress policy for Zero Trust enforcement. |
+
+✅ Helm chart option (`src/helm/`) included for multi-environment values.  
+✅ Compatible with Blue/Green rollout strategies (Argo).
+
+---
+
+### 4️⃣ `.github/workflows/ci-cd.yaml` — CI/CD Pipeline
+Implements a **multi-stage GitHub Actions pipeline**:
+| Stage | Purpose |
+|--------|----------|
+| `build-test` | Lint, install, and run Jest tests. |
+| `build-and-publish` | Build Docker image and push to GHCR. |
+| `scan` | Run Trivy + npm audit for vulnerabilities. |
+| `deploy` | Apply manifests to EKS using `KUBE_CONFIG_DATA` secret. |
+| `attest` | Generate SBOM (Syft) and attest with Cosign. |
+
+✅ Fully automated workflow with image provenance and environment tagging.
+
+---
+
+### 5️⃣ `README.md` — Documentation & Architecture
+This README includes:
+- 🧩 **Setup & Deploy Instructions**  
+- 🏗️ **Architecture Diagram (Mermaid)**  
+- 🔐 **Security Measures & Threat Model**  
+- ⚖️ **Trade-offs & Future Improvements**
+
+✅ Also includes:
+- Section 2 (Scenario Answers)  
+- Section 3 (Short Answers)  
+- Bonus (Optional Differentiators)
+
+---
+
+## 💬 Contact
+
+<p align="center">
+  <b>👨‍💻 Piyush Gupta</b> <br/>
+  🚀 DevOps • Cloud • Security Engineer <br/><br/>
+  <a href="mailto:guptapiyushraj471@gmail.com"><img src="https://img.shields.io/badge/Email-guptapiyushraj471%40gmail.com-blue?logo=gmail"></a>
+  <a href="https://www.linkedin.com/in/piyush-gupta-10a0546bb/"><img src="https://img.shields.io/badge/LinkedIn-Piyush%20Gupta-blue?logo=linkedin"></a>
+  <a href="https://github.com/guptapiyushraj471-cpu"><img src="https://img.shields.io/badge/GitHub-guptapiyushraj471--cpu-black?logo=github"></a>
+</p>
+
+<p align="center">
+  💡 *Made with ❤️ and DevSecOps project*  
+</p>
+
+------------------------------------
