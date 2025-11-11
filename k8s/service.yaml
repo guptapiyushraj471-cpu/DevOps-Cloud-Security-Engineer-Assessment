@@ -1,1 +1,15 @@
-# service.yaml placeholder
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-svc
+  labels:
+    app: todo
+spec:
+  type: ClusterIP
+  selector:
+    app: todo
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+      name: http
