@@ -95,7 +95,7 @@ C --> F[Prometheus Metrics]
 
 ## 🧠 Section 2 — Scenario-Based Answers 
 
-### 🧠 1. EKS Pod Egress Spike (Incident Response)
+###  1. EKS Pod Egress Spike (Incident Response)
 If outbound network traffic from EKS suddenly spikes, I would:
 1. Check CloudWatch metrics and VPC Flow Logs to confirm the pattern.
 2. Use `kubectl top pods` and `kubectl get pods -o wide` to identify the pod/namespace.
