@@ -22,20 +22,23 @@
 
 ---
 
-## 🧾 Table of contents
-- [Overview](#-overview)  
-- [Demo / Screenshots](#-demo--screenshots)  
-- [Tech Stack](#-tech-stack)  
-- [Architecture](#-architecture)  
-- [Quickstart (local)](#-quickstart-local)  
-- [CI / CD](#-ci--cd)  
-- [Infrastructure (Terraform)](#-infrastructure-terraform)  
-- [Kubernetes Manifests](#-kubernetes-manifests)  
-- [Security & Hardening](#-security--hardening)  
-- [Testing & Validation](#-testing--validation)  
-- [Grader Checklist / Mapping](#-grader-checklist--mapping)  
-- [Future Work](#-future-work)  
-- [Contact](#-contact)
+## 🧾 Table of Contents
+
+- [📌 Quick Links](#quick-links)
+- [👋 Overview](#overview)
+- [🧰 Tech Stack](#tech-stack)
+- [🏗️ Architecture](#architecture)
+- [⚙️ Quickstart (Local)](#quickstart-local)
+- [🧩 CI / CD (GitHub Actions)](./.github/workflows/ci-cd.yaml)
+- [☁️ Infrastructure (Terraform)](./infra/terraform/)
+- [🧭 Kubernetes Manifests](./k8s/)
+- [🔐 Security & Hardening](#security--hardening)
+- [✅ Testing & Validation](#testing--validation)
+- [🧠 Section 2 — Scenario-Based Answers](#section-2--scenario-based-answers)
+- [📘 Section 3 — Short Answers](#section-3--short--answers)
+- [🧩 Bonus (Optional Differentiators)](#bonus-optional-differentiators)
+- [🧾 What to Submit — Final Deliverables](#what-to-submit--final-deliverables)
+- [💬 Contact](#contact)
 
 ---
 
