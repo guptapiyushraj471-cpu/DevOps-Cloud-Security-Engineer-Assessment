@@ -1,4 +1,6 @@
-# Terraform remote backend
-Before running terraform init, create:
-- S3 bucket: <your-terraform-state-bucket> with encryption enabled
-- DynamoDB table: <your-terraform-locks-table> (Partition key: LockID) for state locking
+## EKS & IRSA
+This setup creates:
+- VPC (2 AZs)  
+- EKS cluster + managed node group  
+- DynamoDB table for todos  
+- IAM role with IRSA linked to Kubernetes service account `todo-sa`
