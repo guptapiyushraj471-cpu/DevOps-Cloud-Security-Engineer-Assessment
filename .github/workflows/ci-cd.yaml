@@ -2,9 +2,9 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
@@ -78,26 +78,32 @@ jobs:
     needs: build-and-publish
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
       - name: Prepare kubeconfig
         run: |
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > kubeconfig
+          ls -la
         shell: bash
 
       - name: Replace image tag in k8s manifest
         run: |
           IMAGE=ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           echo "Deploying image: $IMAGE"
-          sed "s|ghcr.io/<your-username>/${{ env.IMAGE_NAME }}:.*|${IMAGE}|g" k8s/deployment.yaml > k8s/deployment-ci.yaml || cp k8s/deployment.yaml k8s/deployment-ci.yaml
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
+          # yahan apne actual username/org ka pattern match karo
+          sed "s|ghcr.io/.*/${{ env.IMAGE_NAME }}:.*|$IMAGE|g" k8s/deployment.yaml > k8s/deployment-ci.yaml
 
       - name: Apply Kubernetes manifests
+        run: |
+          kubectl --kubeconfig ./kubeconfig apply -f k8s/deployment-ci.yaml

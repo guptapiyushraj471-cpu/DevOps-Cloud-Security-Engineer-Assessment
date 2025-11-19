@@ -1,4 +1,17 @@
-![CI](https://github.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment/actions/workflows/ci-cd.yaml/badge.svg)
+<p align="center">
+  <img src="assets/banner.svg" alt="DevOps Cloud Security Engineer Banner" width="1000" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment/actions/workflows/ci-cd.yaml/badge.svg" alt="CI Status"/>
+  <img src="https://img.shields.io/github/languages/top/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment" alt="Language"/>
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"/>
+</p>
+
+<h3 align="center">Production-ready microservice: Node.js • Docker • Terraform • EKS • CI/CD • Security</h3>
+
+---
+
 
 # DevOps Cloud Security Engineer Assessment
 
