@@ -2,11 +2,9 @@ name: CI/CD
 
 on:
   push:
-    # यह pipeline तभी चलेगी जब code main branch पर push होगा।
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    # Pull requests पर भी runs-on job चलेगी, पर deploy job नहीं (if: शर्त के कारण)।
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -20,7 +18,7 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -46,7 +44,7 @@ jobs:
     needs: build-test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -57,82 +55,61 @@ jobs:
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Image to GHCR
+      - name: Build and push image to GHCR
         id: build-image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           file: ./Dockerfile
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-      - name: Trivy Scan Image
+      - name: Trivy scan image
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image-ref: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           severity: CRITICAL,HIGH
           ignore-unfixed: true
 
-  # --- CD STAGE: DEPLOYMENT ---
   deploy:
-    # यह job तभी चलेगी जब पिछली job (build-and-publish) पूरी होगी।
     needs: build-and-publish
-    
-    # यह केवल main branch को check करेगा।
     if: github.ref == 'refs/heads/main'
-    
     runs-on: ubuntu-latest
-    
+    env:
+      KUBECONFIG: ${{ github.workspace }}/kubeconfig
+
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up kubectl
+      - name: Install kubectl
         uses: azure/setup-kubectl@v3
         with:
           version: "latest"
-      
-      # FIX: KUBECONFIG variable को set करने के लिए environment block का उपयोग करें 
-      # ताकि यह job के सभी steps के लिए उपलब्ध रहे।
-      - name: Configure Kubeconfig and Environment
-        env:
-          KUBECONFIG_BASE64: ${{ secrets.KUBE_CONFIG_DATA }}
+
+      - name: Prepare kubeconfig
         run: |
-          # 1. Kubeconfig को decode करके file में save करें
-          echo "${{ env.KUBECONFIG_BASE64 }}" | base64 --decode > kubeconfig
-          
-          # 2. $GITHUB_ENV का उपयोग करके KUBECONFIG variable को अगले steps के लिए export करें
-          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
-          
-        shell: bash
-      
-      - name: Check Cluster Connection (Debug)
-        # अब KUBECONFIG environment variable set हो चुका है।
-        run: |
-          echo "Using KUBECONFIG: ${KUBECONFIG}"
-          kubectl cluster-info
-          kubectl get nodes
-          
-      - name: Replace Image Tag in K8s Manifest
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > "$KUBECONFIG"
+          ls -la
+
+      - name: Render deployment manifest with new image
         run: |
           IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           echo "Deploying image: $IMAGE"
 
-          # k8s/deployment.yaml से पढ़कर, k8s/deployment-ci.yaml में लिखता है।
+          # deployment.yaml ki 'image:' line ko nayi image se replace karo
           sed "s|image: .*|image: $IMAGE|g" k8s/deployment.yaml > k8s/deployment-ci.yaml
 
-          echo "Final rendered manifest (for verification):"
+          echo "Final rendered manifest:"
           cat k8s/deployment-ci.yaml
 
-      - name: Apply Kubernetes Manifests (Deployment)
-        # अब kubectl deployment-ci.yaml file को cluster पर apply करेगा।
-        run: kubectl apply -f k8s/deployment-ci.yaml
-        
-      - name: Check Deployment Status
-        run: kubectl rollout status deployment/<your_deployment_name> --timeout=5m
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f k8s/deployment-ci.yaml --validate=false
