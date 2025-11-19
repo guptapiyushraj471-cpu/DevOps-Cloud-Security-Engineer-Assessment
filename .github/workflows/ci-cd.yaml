@@ -82,8 +82,7 @@ jobs:
     # यह job तभी चलेगी जब पिछली job (build-and-publish) पूरी होगी।
     needs: build-and-publish
     
-    # FIX: Job level 'if' condition में secrets का उपयोग नहीं किया जा सकता।
-    # अब यह केवल main branch को check करेगा।
+    # यह केवल main branch को check करेगा।
     if: github.ref == 'refs/heads/main'
     
     runs-on: ubuntu-latest
@@ -98,20 +97,25 @@ jobs:
         uses: azure/setup-kubectl@v3
         with:
           version: "latest"
-
-      - name: Prepare Kubeconfig
-        # KUBE_CONFIG_DATA को decode करके 'kubeconfig' नाम की file में save किया जा रहा है।
+      
+      # FIX: KUBECONFIG variable को set करने के लिए environment block का उपयोग करें 
+      # ताकि यह job के सभी steps के लिए उपलब्ध रहे।
+      - name: Configure Kubeconfig and Environment
+        env:
+          KUBECONFIG_BASE64: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > kubeconfig
+          # 1. Kubeconfig को decode करके file में save करें
+          echo "${{ env.KUBECONFIG_BASE64 }}" | base64 --decode > kubeconfig
+          
+          # 2. $GITHUB_ENV का उपयोग करके KUBECONFIG variable को अगले steps के लिए export करें
+          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
+          
         shell: bash
-        
-      # KUBECONFIG environment variable set करना ज़रूरी है ताकि kubectl इस file को उपयोग करे।
-      - name: Set KUBECONFIG Environment Variable
-        run: echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
       
       - name: Check Cluster Connection (Debug)
+        # अब KUBECONFIG environment variable set हो चुका है।
         run: |
-          # अब kubectl इस kubeconfig file का उपयोग करेगा।
+          echo "Using KUBECONFIG: ${KUBECONFIG}"
           kubectl cluster-info
           kubectl get nodes
           
@@ -120,7 +124,6 @@ jobs:
           IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           echo "Deploying image: $IMAGE"
 
-          # sed command को सही किया गया है ताकि यह image line को सही ढंग से replace करे।
           # k8s/deployment.yaml से पढ़कर, k8s/deployment-ci.yaml में लिखता है।
           sed "s|image: .*|image: $IMAGE|g" k8s/deployment.yaml > k8s/deployment-ci.yaml
 
