@@ -10,10 +10,6 @@ permissions:
   contents: read
   packages: write
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: devops-cloud-security-engineer-assessment
-
 jobs:
   # ------------------------ CI: Build + Test ------------------------
   build-test:
@@ -58,7 +54,7 @@ jobs:
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -68,26 +64,25 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository_owner }}/devops-cloud-security-engineer-assessment:${{ github.sha }}
           file: ./Dockerfile
 
       - name: Trivy scan image
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image-ref: ghcr.io/${{ github.repository_owner }}/devops-cloud-security-engineer-assessment:${{ github.sha }}
           severity: CRITICAL,HIGH
           ignore-unfixed: true
 
   # ------------------------ CD: Deploy to Kubernetes ------------------------
-    # ------------------------ CD: Deploy to Kubernetes ------------------------
   deploy:
     needs: build-and-publish
-    continue-on-error: true
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     env:
       KUBECONFIG: ${{ github.workspace }}/kubeconfig
-      IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      IMAGE: ghcr.io/${{ github.repository_owner }}/devops-cloud-security-engineer-assessment:${{ github.sha }}
 
     steps:
       - name: Checkout
