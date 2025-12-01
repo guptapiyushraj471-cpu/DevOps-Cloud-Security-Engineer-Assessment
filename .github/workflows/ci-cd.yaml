@@ -81,10 +81,8 @@ jobs:
   # ------------------------ CD: Deploy to Kubernetes ------------------------
   deploy:
     needs: build-and-publish
-    # Sirf tab chalega jab:
-    # 1) branch main ho
-    # 2) KUBE_CONFIG_DATA secret defined ho
-    if: ${{ github.ref == 'refs/heads/main' && secrets.KUBE_CONFIG_DATA != '' }}
+    # abhi sirf main branch par CD chalega
+    if: github.ref == 'refs/heads/main'
     continue-on-error: true
     runs-on: ubuntu-latest
 
@@ -98,10 +96,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Prepare kubeconfig
+      - name: Prepare kubeconfig (safe skip if secret not set)
         shell: bash
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > "$KUBECONFIG"
+          if [ -z "$KUBE_CONFIG_DATA" ]; then
+            echo "KUBE_CONFIG_DATA secret not set – skipping deploy steps."
+            exit 0
+          fi
+
+          echo "$KUBE_CONFIG_DATA" | base64 --decode > "$KUBECONFIG"
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
@@ -132,4 +137,9 @@ jobs:
       - name: Apply Kubernetes manifests
         shell: bash
         run: |
+          if [ ! -f "$KUBECONFIG" ]; then
+            echo "No kubeconfig found – skipping kubectl apply."
+            exit 0
+          fi
+
           kubectl apply -f k8s/deployment-ci.yaml
