@@ -79,10 +79,9 @@ jobs:
           ignore-unfixed: true
 
   # ------------------------ CD: Deploy to Kubernetes ------------------------
+    # ------------------------ CD: Deploy to Kubernetes ------------------------
   deploy:
     needs: build-and-publish
-    # abhi sirf main branch par CD chalega
-    if: github.ref == 'refs/heads/main'
     continue-on-error: true
     runs-on: ubuntu-latest
 
