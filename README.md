@@ -46,14 +46,6 @@
   - [🎯 Goal](#-goal)
   - [🏗️ Architecture](#️-architecture)
     - [🔧 Technology Stack](#-technology-stack)
-  - [💻 Local Developer Flow](#-local-developer-flow)
-  - [🔄 CI/CD Pipeline (GitHub Actions)](#-cicd-pipeline-github-actions)
-  - [🏢 Infrastructure (Terraform)](#-infrastructure-terraform)
-  - [☸️ Kubernetes Manifests](#️-kubernetes-manifests)
-  - [🔐 Security, Secrets \& IAM](#-security-secrets--iam)
-  - [🛡️ Threat Model \& Mitigations](#️-threat-model--mitigations)
-  - [⚖️ Trade-offs \& Future Improvements](#️-trade-offs--future-improvements)
-  - [📋 Grader Checklist (What to Review)](#-grader-checklist-what-to-review)
   - [🤖 Powered by AI](#-powered-by-ai)
     - [🧠 AI Integration Points](#-ai-integration-points)
     - [🔮 AI-Enhanced Features](#-ai-enhanced-features)
@@ -63,20 +55,11 @@
     - [🔮 Phase 3: Advanced Features (Q2 2026)](#-phase-3-advanced-features-q2-2026)
     - [🌟 Phase 4: AI \& Intelligence (Q3 2026)](#-phase-4-ai--intelligence-q3-2026)
     - [🎨 Phase 5: Developer Experience (Q4 2026)](#-phase-5-developer-experience-q4-2026)
-  - [🚀 Quick Start](#-quick-start)
-    - [Prerequisites](#prerequisites)
-    - [Installation Steps](#installation-steps)
-    - [Docker Deployment](#docker-deployment)
-    - [Kubernetes Deployment](#kubernetes-deployment)
   - [📸 Screenshots](#-screenshots)
     - [Application Interface](#application-interface)
     - [CI/CD Pipeline](#cicd-pipeline)
     - [Monitoring Dashboard](#monitoring-dashboard)
     - [Kubernetes Resources](#kubernetes-resources)
-  - [🤝 Contributing](#-contributing)
-    - [How to Contribute](#how-to-contribute)
-    - [Contribution Guidelines](#contribution-guidelines)
-    - [Code of Conduct](#code-of-conduct)
     - [Development Workflow](#development-workflow)
   - [📄 License](#-license)
   - [🙏 Acknowledgments](#-acknowledgments)
@@ -180,79 +163,7 @@ graph LR
 | **Security** | Trivy, IRSA | Vulnerability scanning & IAM |
 | **Monitoring** | CloudWatch, Prometheus | Observability & metrics |
 
----
 
-## 💻 Local Developer Flow
-
-<p align="center">
-  <img src="./assets/local-dev-flow.png" alt="Local Development Flow" width="800"/>
-</p>
-
-[Original content will be added here when you provide it]
-
----
-
-## 🔄 CI/CD Pipeline (GitHub Actions)
-
-<p align="center">
-  <img src="./assets/cicd-pipeline.png" alt="CI/CD Pipeline" width="900"/>
-</p>
-
-[Original content will be added here when you provide it]
-
----
-
-## 🏢 Infrastructure (Terraform)
-
-<p align="center">
-  <img src="./assets/terraform-infrastructure.png" alt="Terraform Infrastructure" width="800"/>
-</p>
-
-[Original content will be added here when you provide it]
-
----
-
-## ☸️ Kubernetes Manifests
-
-<p align="center">
-  <img src="./assets/kubernetes-resources.png" alt="Kubernetes Resources" width="800"/>
-</p>
-
-[Original content will be added here when you provide it]
-
----
-
-## 🔐 Security, Secrets & IAM
-
-<p align="center">
-  <img src="./assets/security-overview.png" alt="Security Overview" width="800"/>
-</p>
-
-[Original content will be added here when you provide it]
-
----
-
-## 🛡️ Threat Model & Mitigations
-
-<p align="center">
-  <img src="./assets/threat-model.png" alt="Threat Model" width="800"/>
-</p>
-
-[Original content will be added here when you provide it]
-
----
-
-## ⚖️ Trade-offs & Future Improvements
-
-[Original content will be added here when you provide it]
-
----
-
-## 📋 Grader Checklist (What to Review)
-
-[Original content will be added here when you provide it]
-
----
 
 ## 🤖 Powered by AI
 
@@ -331,61 +242,7 @@ This project leverages AI-assisted development practices and modern automation:
 
 ---
 
-## 🚀 Quick Start
 
-### Prerequisites
-
-```bash
-# Required tools
-- Node.js >= 16.x
-- Docker >= 20.x
-- kubectl >= 1.24
-- terraform >= 1.3
-- AWS CLI >= 2.x
-```
-
-### Installation Steps
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/guptapiyushraj471-cpu/DevOps-Cloud-Security-Engineer-Assessment.git
-cd DevOps-Cloud-Security-Engineer-Assessment
-
-# 2. Install dependencies
-npm install
-
-# 3. Set up environment variables
-cp .env.example .env
-# Edit .env with your configuration
-
-# 4. Run locally
-npm run dev
-
-# 5. Run tests
-npm test
-```
-
-### Docker Deployment
-
-```bash
-# Build the Docker image
-docker build -t todo-microservice:latest .
-
-# Run the container
-docker run -p 3000:3000 todo-microservice:latest
-```
-
-### Kubernetes Deployment
-
-```bash
-# Apply Kubernetes manifests
-kubectl apply -f k8s/
-
-# Check deployment status
-kubectl get pods -n todo-app
-```
-
----
 
 ## 📸 Screenshots
 
@@ -422,45 +279,7 @@ kubectl get pods -n todo-app
 </p>
 
 ---
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Here's how you can help:
-
-### How to Contribute
-
-1. **Fork the Repository**
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/DevOps-Cloud-Security-Engineer-Assessment.git
-   ```
-
-2. **Create a Feature Branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-
-3. **Commit Your Changes**
-   ```bash
-   git commit -m 'Add some amazing feature'
-   ```
-
-4. **Push to the Branch**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-
-5. **Open a Pull Request**
-
-### Contribution Guidelines
-
-- ✅ Follow the existing code style
-- ✅ Write meaningful commit messages
-- ✅ Add tests for new features
-- ✅ Update documentation as needed
-- ✅ Ensure all tests pass
-- ✅ Keep PRs focused and atomic
-
-### Code of Conduct
+ Code of Conduct
 
 Please note that this project follows a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
