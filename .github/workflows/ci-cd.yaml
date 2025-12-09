@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI-CD
 
 on:
   push:
@@ -67,9 +67,9 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          file: ./Dockerfile
 
       - name: Trivy scan image
         uses: aquasecurity/trivy-action@0.20.0
@@ -79,14 +79,11 @@ jobs:
           ignore-unfixed: true
 
   # ------------------------ CD: Deploy to Kubernetes ------------------------
-  Deploy:
+  deploy:
     needs: build-and-publish
-    # Sirf tab chalega jab:
-    # 1) branch main ho
-    # 2) KUBE_CONFIG_DATA secret defined ho
-    if: ${{ github.ref == 'refs/heads/main' && secrets.KUBE_CONFIG_DATA != '' }}
-    continue-on-error: true
     runs-on: ubuntu-latest
+    continue-on-error: true
+    if: ${{ github.ref == 'refs/heads/main' && secrets.KUBE_CONFIG_DATA != '' }}
 
     env:
       KUBECONFIG: ${{ github.workspace }}/kubeconfig
@@ -101,6 +98,10 @@ jobs:
       - name: Prepare kubeconfig
         shell: bash
         run: |
+          if [ -z "${{ secrets.KUBE_CONFIG_DATA }}" ]; then
+            echo "KUBE_CONFIG_DATA secret not set – skipping deployment..."
+            exit 0
+          fi
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > "$KUBECONFIG"
 
       - name: Set up kubectl
@@ -112,24 +113,14 @@ jobs:
         shell: bash
         run: |
           echo "Deploying image: $IMAGE"
-
-          if [ -f k8s/deployment.yaml ]; then
-            sed "s|image: .*|image: ${IMAGE}|g" k8s/deployment.yaml > k8s/deployment-ci.yaml
-          else
-            echo "k8s/deployment.yaml not found"
-            exit 1
-          fi
-
-          echo "Final rendered manifest:"
+          sed "s|image: .*|image: ${IMAGE}|g" k8s/deployment.yaml > k8s/deployment-ci.yaml
           cat k8s/deployment-ci.yaml
 
-      - name: Debug cluster connectivity (optional)
-        shell: bash
+      - name: Debug cluster connectivity
         run: |
           kubectl version --short || true
           kubectl get nodes || true
 
       - name: Apply Kubernetes manifests
-        shell: bash
         run: |
           kubectl apply -f k8s/deployment-ci.yaml
