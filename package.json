@@ -1,9 +1,8 @@
 {
-<<<<<<< HEAD
   "name": "Devops-cloud-security-engineer-assessment",
-=======
+
   "name": "devops-cloud-security-engineer-assessment",
->>>>>>> 0be7d04b15e58a38120331fd873ebae9c32739dc
+
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
